@@ -17,6 +17,7 @@ type Add struct {
 	cur item.Item
 }
 
+//comment
 func (add *Add) Init(name string, quantity int, price float64, typ string) {
 	switch typ {
 	case "raw":

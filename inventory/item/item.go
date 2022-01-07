@@ -16,6 +16,7 @@ func checkneg(cur float64) bool {
 	return false
 }
 
+//comment
 func RawCalc(cur float64) float64 {
 	if checkneg(cur) {
 		return 0

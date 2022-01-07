@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	//review
 	namePtr := flag.String("name", "unknown", "name of the product")
 	pricePtr := flag.Float64("price", 0, "price of the item")
 	quantityPtr := flag.Int("quantity", 0, "quantity")

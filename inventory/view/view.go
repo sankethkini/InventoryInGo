@@ -22,6 +22,8 @@ func GetDetails() {
 	fmt.Scanf("%f", &price)
 	UserInput(1, name, quantity, price, typ)
 }
+
+//comment
 func UserInput(curInput int, name string, quantity int, price float64, typ string) {
 	if curInput == 1 {
 		add := commands.Add{}
