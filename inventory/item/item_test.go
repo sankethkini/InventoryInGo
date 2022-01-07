@@ -14,7 +14,7 @@ var tests = []struct {
 	ExpcImp  float64
 	ExpcManf float64
 }{
-	{Name: "one", Price: 400, Quantity: 12, ExpcRaw: 450, ExpcManf: 459, ExpcImp: 467.25},
+	{Name: "one", Price: 400, Quantity: 12, ExpcRaw: 450, ExpcManf: 459, ExpcImp: 462},
 	{Name: "two", Price: 0, Quantity: 12, ExpcRaw: 0, ExpcManf: 0, ExpcImp: 0},
 	{Name: "", Price: -23, Quantity: 12, ExpcRaw: 0, ExpcManf: 0, ExpcImp: 0},
 	{Name: "", Price: 100, Quantity: 12, ExpcRaw: 112.5, ExpcManf: 114.75, ExpcImp: 120},
