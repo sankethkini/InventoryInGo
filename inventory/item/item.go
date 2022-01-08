@@ -1,51 +1,83 @@
 package item
 
-type Item struct {
+import "inventory/inventory/constants"
+
+type BaseItem struct {
 	Name     string
 	Price    float64
 	Quantity int
 	Tax      float64
-	Calc     func(float64) float64
 }
 
+//every type of item should implement this
+type Item interface {
+	GetDetails() BaseItem
+	Calc() float64
+}
+
+//function to check negetive number
 func checkneg(cur float64) bool {
-	if cur < 0 {
-		return true
-	}
-
-	return false
+	return cur <= 0
 }
 
-func RawCalc(cur float64) float64 {
-	if checkneg(cur) {
+//item of type raw
+type RawItem struct {
+	B BaseItem
+}
+
+func (item RawItem) GetDetails() BaseItem {
+	baseItem := BaseItem{Name: item.B.Name, Price: item.B.Price, Quantity: item.B.Quantity, Tax: item.B.Tax}
+	return baseItem
+}
+func (item RawItem) Calc() float64 {
+	if checkneg(item.B.Price) {
 		return 0
 	}
-	total := cur + cur*0.125
+	total := item.B.Price
+	total += total * (constants.RawTax / 100)
 	return total
 }
 
-func ImportedCalc(cur float64) float64 {
-	if checkneg(cur) {
+//item of type imported
+type ImportedItem struct {
+	B BaseItem
+}
+
+func (item ImportedItem) GetDetails() BaseItem {
+	baseItem := BaseItem{Name: item.B.Name, Price: item.B.Price, Quantity: item.B.Quantity, Tax: item.B.Tax}
+	return baseItem
+}
+func (item ImportedItem) Calc() float64 {
+	if checkneg(item.B.Price) {
 		return 0
 	}
-	var total float64
-	total = cur + cur*0.1
+	total := item.B.Price
+	total += total * (constants.ImportTax / 100)
 	if total <= 100 {
-		total = total + 5
+		total += constants.Surcharge100
 	} else if total <= 200 {
-		total = total + 10
+		total += constants.Surcharge200
 	} else {
-		total = total + total*0.05
+		total += total * (constants.SurchargeMore / 100)
 	}
 	return total
 }
 
-func ManufacturedCalc(cur float64) float64 {
-	if checkneg(cur) {
+//item of type Manufactured
+type ManufacturedItem struct {
+	B BaseItem
+}
+
+func (item ManufacturedItem) GetDetails() BaseItem {
+	baseItem := BaseItem{Name: item.B.Name, Price: item.B.Price, Quantity: item.B.Quantity, Tax: item.B.Tax}
+	return baseItem
+}
+func (item ManufacturedItem) Calc() float64 {
+	if checkneg(item.B.Price) {
 		return 0
 	}
-	var total float64
-	total = cur + cur*0.125
-	total = total + total*0.02
+	total := item.B.Price
+	total += total * (constants.ManufacturedTax / 100)
+	total += total * (constants.ManufacturedExtra / 100)
 	return total
 }

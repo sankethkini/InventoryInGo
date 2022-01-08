@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-
-	"../inventory/inventory/view"
+	"inventory/inventory/view"
 )
 
 func main() {
