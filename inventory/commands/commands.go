@@ -2,15 +2,19 @@ package commands
 
 import (
 	"fmt"
+	"inventory/inventory/constants"
+	"inventory/inventory/item"
 	"os"
-
-	"../item"
+	"strconv"
 )
 
 var items []item.Item
 
+//alisaing map[string]string
+type data = map[string]string
+
 type Command interface {
-	Execute()
+	Execute() []data
 }
 
 type Add struct {
@@ -18,45 +22,53 @@ type Add struct {
 }
 
 func (add *Add) Init(name string, quantity int, price float64, typ string) {
+	baseItem := item.BaseItem{Name: name, Quantity: quantity, Price: price}
 	switch typ {
 	case "raw":
-		raw := item.Item{Name: name, Price: price, Quantity: quantity, Tax: 12.5}
-		raw.Calc = item.RawCalc
-		add.cur = raw
-		break
+		baseItem.Tax = constants.RawTax
+		add.cur = item.RawItem{B: baseItem}
+
 	case "imported":
-		imported := item.Item{Name: name, Price: price, Quantity: quantity, Tax: 10}
-		imported.Calc = item.ImportedCalc
-		add.cur = imported
-		break
+		baseItem.Tax = constants.ImportTax
+		add.cur = item.ImportedItem{B: baseItem}
+
 	case "manufactured":
-		manf := item.Item{Name: name, Price: price, Quantity: quantity, Tax: 12.5}
-		manf.Calc = item.ManufacturedCalc
-		add.cur = manf
-		break
+		baseItem.Tax = constants.ManufacturedTax
+		add.cur = item.ManufacturedItem{B: baseItem}
+
 	default:
 		fmt.Println("not a proper type")
 		os.Exit(1)
-		break
+
 	}
 }
 
-func (add *Add) Execute() {
+func (add *Add) Execute() []data {
 	items = append(items, add.cur)
+	return nil
 }
 
 type Display struct {
 }
 
-func (display *Display) Execute() {
+func (display *Display) Execute() []data {
+	var allitems []data
 	for _, val := range items {
-		fmt.Println("Name :", val.Name, "Price :", val.Price, "Tax :", val.Tax, "Total price:", val.Calc(val.Price))
+		cur := make(data)
+		cur["name"] = val.GetDetails().Name
+		cur["total"] = strconv.FormatFloat(val.Calc(), 'f', 3, 64)
+		cur["tax"] = strconv.FormatFloat(val.GetDetails().Tax, 'f', 3, 64)
+		cur["price"] = strconv.FormatFloat(val.GetDetails().Price, 'f', 3, 64)
+		allitems = append(allitems, cur)
 	}
+	return allitems
 }
 
 type Exit struct {
 }
 
-func (exit *Exit) Execute() {
+func (exit *Exit) Execute() []data {
 	fmt.Println("exiting....")
+	os.Exit(0)
+	return nil
 }
