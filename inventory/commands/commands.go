@@ -23,18 +23,19 @@ type Add struct {
 
 func (add *Add) Init(name string, quantity int, price float64, typ string) {
 	baseItem := item.BaseItem{Name: name, Quantity: quantity, Price: price}
+	abstract := item.AbstractItem{BaseItem: baseItem}
 	switch typ {
 	case "raw":
 		baseItem.Tax = constants.RawTax
-		add.cur = item.RawItem{B: baseItem}
+		add.cur = item.RawItem{AbstractItem: abstract}
 
 	case "imported":
 		baseItem.Tax = constants.ImportTax
-		add.cur = item.ImportedItem{B: baseItem}
+		add.cur = item.ImportedItem{AbstractItem: abstract}
 
 	case "manufactured":
 		baseItem.Tax = constants.ManufacturedTax
-		add.cur = item.ManufacturedItem{B: baseItem}
+		add.cur = item.ManufacturedItem{AbstractItem: abstract}
 
 	default:
 		fmt.Println("not a proper type")

@@ -1,8 +1,6 @@
 package item
 
-import (
-	"testing"
-)
+import "testing"
 
 var tests = []struct {
 	Name     string
@@ -21,9 +19,9 @@ var tests = []struct {
 func TestItemCalc(t *testing.T) {
 	for i, val := range tests {
 		b := BaseItem{Name: val.Name, Price: val.Price, Quantity: val.Quantity}
-		raw := RawItem{B: b}
-		imported := ImportedItem{B: b}
-		manf := ManufacturedItem{B: b}
+		raw := RawItem{AbstractItem: AbstractItem{b}}
+		imported := ImportedItem{AbstractItem: AbstractItem{b}}
+		manf := ManufacturedItem{AbstractItem: AbstractItem{b}}
 		if raw.Calc() != val.ExpcRaw {
 			t.Error("error in calculating raw product price", i)
 		}

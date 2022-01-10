@@ -20,38 +20,40 @@ func checkneg(cur float64) bool {
 	return cur <= 0
 }
 
-//item of type raw
-type RawItem struct {
-	B BaseItem
+//abstract strct for concrete item
+type AbstractItem struct {
+	BaseItem
 }
 
-func (item RawItem) GetDetails() BaseItem {
-	baseItem := BaseItem{Name: item.B.Name, Price: item.B.Price, Quantity: item.B.Quantity, Tax: item.B.Tax}
+func (item AbstractItem) GetDetails() BaseItem {
+	baseItem := BaseItem{Name: item.Name, Price: item.Price, Quantity: item.Quantity, Tax: item.Tax}
 	return baseItem
 }
+
+//item of type raw
+type RawItem struct {
+	AbstractItem
+}
+
 func (item RawItem) Calc() float64 {
-	if checkneg(item.B.Price) {
+	if checkneg(item.Price) {
 		return 0
 	}
-	total := item.B.Price
+	total := item.Price
 	total += total * (constants.RawTax / 100)
 	return total
 }
 
 //item of type imported
 type ImportedItem struct {
-	B BaseItem
+	AbstractItem
 }
 
-func (item ImportedItem) GetDetails() BaseItem {
-	baseItem := BaseItem{Name: item.B.Name, Price: item.B.Price, Quantity: item.B.Quantity, Tax: item.B.Tax}
-	return baseItem
-}
 func (item ImportedItem) Calc() float64 {
-	if checkneg(item.B.Price) {
+	if checkneg(item.Price) {
 		return 0
 	}
-	total := item.B.Price
+	total := item.Price
 	total += total * (constants.ImportTax / 100)
 	if total <= 100 {
 		total += constants.Surcharge100
@@ -65,18 +67,14 @@ func (item ImportedItem) Calc() float64 {
 
 //item of type Manufactured
 type ManufacturedItem struct {
-	B BaseItem
+	AbstractItem
 }
 
-func (item ManufacturedItem) GetDetails() BaseItem {
-	baseItem := BaseItem{Name: item.B.Name, Price: item.B.Price, Quantity: item.B.Quantity, Tax: item.B.Tax}
-	return baseItem
-}
 func (item ManufacturedItem) Calc() float64 {
-	if checkneg(item.B.Price) {
+	if checkneg(item.Price) {
 		return 0
 	}
-	total := item.B.Price
+	total := item.Price
 	total += total * (constants.ManufacturedTax / 100)
 	total += total * (constants.ManufacturedExtra / 100)
 	return total
