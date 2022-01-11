@@ -23,7 +23,7 @@ func GetDetails() {
 }
 
 func Display(cur []map[string]string) {
-	fmt.Println(1)
+
 	for _, val := range cur {
 		fmt.Println("Name :", val["name"], "Price :", val["price"], "Tax :", val["tax"], "Total :", val["total"])
 	}
