@@ -1,47 +1,37 @@
 package commands
 
 import (
-	"inventory/inventory/item"
-	"reflect"
 	"testing"
 )
 
 var test = []struct {
-	name     string
-	price    float64
-	quantity int
 	typ      string
-	exp      interface{}
+	expected error
 }{
 	{
-		name:     "sanket",
-		price:    300,
-		quantity: 10,
 		typ:      "raw",
-		exp:      item.RawItem{},
+		expected: nil,
 	},
 	{
-		name:     "sanket",
-		price:    300,
-		quantity: 10,
-		typ:      "imported",
-		exp:      item.ImportedItem{},
-	},
-	{
-		name:     "sanket",
-		price:    300,
-		quantity: 10,
 		typ:      "manufactured",
-		exp:      item.ManufacturedItem{},
+		expected: nil,
+	},
+	{
+		typ:      "imported",
+		expected: nil,
+	},
+	{
+		typ:      "other",
+		expected: NotARightTypeErr,
 	},
 }
 
 func TestAdd(t *testing.T) {
-	addcommand := Add{}
+
 	for _, val := range test {
-		addcommand.Init(val.name, val.quantity, val.price, val.typ)
-		if reflect.TypeOf(addcommand.cur) != reflect.TypeOf(val.exp) {
-			t.Error("not of same type")
+		_, err := NewAddCommand("apples", 10, 100, val.typ)
+		if err != val.expected {
+			t.Errorf("add command is not correct expected: %v got :%v", val.expected, err)
 		}
 	}
 }

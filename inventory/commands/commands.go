@@ -2,74 +2,88 @@ package commands
 
 import (
 	"fmt"
-	"inventory/inventory/constants"
 	"inventory/inventory/item"
 	"os"
-	"strconv"
 )
 
 var items []item.Item
 
-//alisaing map[string]string
-type data = map[string]string
+//createmsg creates required return message
+func createmsg(msg string) (returnmsg []data) {
 
-type Command interface {
-	Execute() []data
+	mp := make(data)
+	mp["message"] = msg
+	returnmsg = append(returnmsg, mp)
+	return
 }
 
-type Add struct {
+//alisaing map[string]string
+type data = map[string]interface{}
+
+type Command interface {
+	Execute() ([]data, error)
+}
+
+type add struct {
 	cur item.Item
 }
 
-func (add *Add) Init(name string, quantity int, price float64, typ string) {
-	baseItem := item.BaseItem{Name: name, Quantity: quantity, Price: price}
-	abstract := item.AbstractItem{BaseItem: baseItem}
-	switch typ {
-	case "raw":
-		baseItem.Tax = constants.RawTax
-		add.cur = item.RawItem{AbstractItem: abstract}
-
-	case "imported":
-		baseItem.Tax = constants.ImportTax
-		add.cur = item.ImportedItem{AbstractItem: abstract}
-
-	case "manufactured":
-		baseItem.Tax = constants.ManufacturedTax
-		add.cur = item.ManufacturedItem{AbstractItem: abstract}
-
-	default:
-		fmt.Println("not a proper type")
-		os.Exit(1)
-
-	}
-}
-
-func (add *Add) Execute() []data {
+func (add *add) Execute() ([]data, error) {
 	items = append(items, add.cur)
-	return nil
+	msg := createmsg("item added successfuly")
+	return msg, nil
 }
 
-type Display struct {
+type display struct {
 }
 
-func (display *Display) Execute() []data {
+func (display *display) Execute() ([]data, error) {
 	var allitems []data
 	for _, val := range items {
 		cur := make(data)
-		cur["name"] = val.GetDetails().Name
-		cur["total"] = strconv.FormatFloat(val.Calc(), 'f', 3, 64)
-		cur["tax"] = strconv.FormatFloat(val.GetDetails().Tax, 'f', 3, 64)
-		cur["price"] = strconv.FormatFloat(val.GetDetails().Price, 'f', 3, 64)
+		name, price, quantity, tax := val.GetDetails()
+		cur["name"] = name
+		cur["price"] = price
+		cur["quantity"] = quantity
+		cur["total"] = val.Calc()
+		cur["tax"] = tax
 		allitems = append(allitems, cur)
 	}
-	return allitems
+	return allitems, nil
 }
 
-type Exit struct {
+type exit struct {
 }
 
-func (exit *Exit) Execute() []data {
+func (exit *exit) Execute() ([]data, error) {
 	fmt.Println("exiting....")
 	os.Exit(0)
-	return nil
+	return nil, nil
+}
+
+func NewAddCommand(name string, quantity int, price float64, typ string) (Command, error) {
+	add := add{}
+	switch typ {
+	case "raw":
+		add.cur = item.NewRawItem(name, price, quantity)
+	case "imported":
+		add.cur = item.NewImportedItem(name, price, quantity)
+
+	case "manufactured":
+		add.cur = item.NewManufacturedItem(name, price, quantity)
+	default:
+
+		return nil, NotARightTypeErr
+	}
+	return &add, nil
+}
+
+func NewDisplayCommand() (Command, error) {
+	display := display{}
+	return &display, nil
+}
+
+func NewExitCommand() (Command, error) {
+	exit := exit{}
+	return &exit, nil
 }
