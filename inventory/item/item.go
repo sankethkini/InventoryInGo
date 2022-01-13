@@ -2,17 +2,31 @@ package item
 
 import "inventory/inventory/constants"
 
-type BaseItem struct {
-	Name     string
-	Price    float64
-	Quantity int
-	Tax      float64
+type baseItem struct {
+	name     string
+	price    float64
+	quantity int
+	tax      float64
 }
 
 //every type of item should implement this
 type Item interface {
-	GetDetails() BaseItem
+	GetDetails() (string, float64, int, float64)
 	Calc() float64
+}
+
+func (b *baseItem) SetDetails(name string, price float64, quantity int) {
+	b.name = name
+	b.price = price
+	b.quantity = quantity
+}
+
+func (b *baseItem) GetDetails() (name string, price float64, quantity int, tax float64) {
+	name = b.name
+	price = b.price
+	quantity = b.quantity
+	tax = b.tax
+	return
 }
 
 //function to check negetive number
@@ -20,40 +34,30 @@ func checkneg(cur float64) bool {
 	return cur <= 0
 }
 
-//abstract strct for concrete item
-type AbstractItem struct {
-	BaseItem
+//rawItem is struct for item of type raw
+type rawItem struct {
+	baseItem
 }
 
-func (item AbstractItem) GetDetails() BaseItem {
-	baseItem := BaseItem{Name: item.Name, Price: item.Price, Quantity: item.Quantity, Tax: item.Tax}
-	return baseItem
-}
-
-//item of type raw
-type RawItem struct {
-	AbstractItem
-}
-
-func (item RawItem) Calc() float64 {
-	if checkneg(item.Price) {
+func (item rawItem) Calc() float64 {
+	if checkneg(item.price) {
 		return 0
 	}
-	total := item.Price
+	total := item.price
 	total += total * (constants.RawTax / 100)
 	return total
 }
 
-//item of type imported
-type ImportedItem struct {
-	AbstractItem
+//importedItem is struct for imported items
+type importedItem struct {
+	baseItem
 }
 
-func (item ImportedItem) Calc() float64 {
-	if checkneg(item.Price) {
+func (item importedItem) Calc() float64 {
+	if checkneg(item.price) {
 		return 0
 	}
-	total := item.Price
+	total := item.price
 	total += total * (constants.ImportTax / 100)
 	if total <= 100 {
 		total += constants.Surcharge100
@@ -65,17 +69,38 @@ func (item ImportedItem) Calc() float64 {
 	return total
 }
 
-//item of type Manufactured
-type ManufacturedItem struct {
-	AbstractItem
+//ManufacturedItem is struct for manufactured items
+type manufacturedItem struct {
+	baseItem
 }
 
-func (item ManufacturedItem) Calc() float64 {
-	if checkneg(item.Price) {
+func (item manufacturedItem) Calc() float64 {
+	if checkneg(item.price) {
 		return 0
 	}
-	total := item.Price
+	total := item.price
 	total += total * (constants.ManufacturedTax / 100)
 	total += total * (constants.ManufacturedExtra / 100)
 	return total
+}
+
+func NewManufacturedItem(name string, price float64, quantity int) *manufacturedItem {
+	cur := manufacturedItem{}
+	cur.tax = constants.ManufacturedTax
+	cur.SetDetails(name, price, quantity)
+	return &cur
+}
+
+func NewImportedItem(name string, price float64, quantity int) *importedItem {
+	cur := importedItem{}
+	cur.tax = constants.ImportTax
+	cur.SetDetails(name, price, quantity)
+	return &cur
+}
+
+func NewRawItem(name string, price float64, quantity int) *rawItem {
+	cur := rawItem{}
+	cur.tax = constants.RawTax
+	cur.SetDetails(name, price, quantity)
+	return &cur
 }

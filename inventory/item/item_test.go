@@ -18,16 +18,18 @@ var tests = []struct {
 
 func TestItemCalc(t *testing.T) {
 	for i, val := range tests {
-		b := BaseItem{Name: val.Name, Price: val.Price, Quantity: val.Quantity}
-		raw := RawItem{AbstractItem: AbstractItem{b}}
-		imported := ImportedItem{AbstractItem: AbstractItem{b}}
-		manf := ManufacturedItem{AbstractItem: AbstractItem{b}}
+
+		raw := NewRawItem(val.Name, val.Price, val.Quantity)
 		if raw.Calc() != val.ExpcRaw {
 			t.Error("error in calculating raw product price", i)
 		}
+
+		imported := NewImportedItem(val.Name, val.Price, val.Quantity)
 		if imported.Calc() != val.ExpcImp {
 			t.Error("error in calculating imported product price", i, imported.Calc())
 		}
+
+		manf := NewManufacturedItem(val.Name, val.Price, val.Quantity)
 		if manf.Calc() != val.ExpcManf {
 			t.Error("error in calculating manufactured product price", i)
 		}
