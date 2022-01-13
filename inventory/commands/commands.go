@@ -20,10 +20,12 @@ func createmsg(msg string) (returnmsg []data) {
 //alisaing map[string]string
 type data = map[string]interface{}
 
+//Command is a interface for all the commands
 type Command interface {
 	Execute() ([]data, error)
 }
 
+//add command implementation
 type add struct {
 	cur item.Item
 }
@@ -34,24 +36,31 @@ func (add *add) Execute() ([]data, error) {
 	return msg, nil
 }
 
+//display command implementation
 type display struct {
 }
 
 func (display *display) Execute() ([]data, error) {
 	var allitems []data
+
 	for _, val := range items {
+
 		cur := make(data)
 		name, price, quantity, tax := val.GetDetails()
+
 		cur["name"] = name
 		cur["price"] = price
 		cur["quantity"] = quantity
 		cur["total"] = val.Calc()
 		cur["tax"] = tax
+
 		allitems = append(allitems, cur)
 	}
+
 	return allitems, nil
 }
 
+//exit command implementation
 type exit struct {
 }
 
@@ -61,11 +70,15 @@ func (exit *exit) Execute() ([]data, error) {
 	return nil, nil
 }
 
+//NewAddCommand is add command's constructor
 func NewAddCommand(name string, quantity int, price float64, typ string) (Command, error) {
 	add := add{}
+
 	switch typ {
+
 	case "raw":
 		add.cur = item.NewRawItem(name, price, quantity)
+
 	case "imported":
 		add.cur = item.NewImportedItem(name, price, quantity)
 
@@ -75,14 +88,17 @@ func NewAddCommand(name string, quantity int, price float64, typ string) (Comman
 
 		return nil, NotARightTypeErr
 	}
+
 	return &add, nil
 }
 
+//NewDisplayCommand is display command's constructor
 func NewDisplayCommand() (Command, error) {
 	display := display{}
 	return &display, nil
 }
 
+//NewExitCommand is exit command's constructor
 func NewExitCommand() (Command, error) {
 	exit := exit{}
 	return &exit, nil

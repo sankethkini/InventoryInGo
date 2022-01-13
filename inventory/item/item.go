@@ -84,6 +84,7 @@ func (item manufacturedItem) Calc() float64 {
 	return total
 }
 
+//NewManufacturedItem is Manufactured item's constructor
 func NewManufacturedItem(name string, price float64, quantity int) *manufacturedItem {
 	cur := manufacturedItem{}
 	cur.tax = constants.ManufacturedTax
@@ -91,6 +92,7 @@ func NewManufacturedItem(name string, price float64, quantity int) *manufactured
 	return &cur
 }
 
+//NewImportedItem is Imported item's constructor
 func NewImportedItem(name string, price float64, quantity int) *importedItem {
 	cur := importedItem{}
 	cur.tax = constants.ImportTax
@@ -98,6 +100,7 @@ func NewImportedItem(name string, price float64, quantity int) *importedItem {
 	return &cur
 }
 
+//NewRawItem is Raw item's constructor
 func NewRawItem(name string, price float64, quantity int) *rawItem {
 	cur := rawItem{}
 	cur.tax = constants.RawTax

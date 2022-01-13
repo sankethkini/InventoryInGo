@@ -68,6 +68,7 @@ func RunCommand(curInput int, name string, quantity int, price float64, typ stri
 
 }
 
+//MenuForUser displays the menu for user
 func MenuForUser() {
 	fmt.Println("1. add more items 2. display all 3. exit")
 	var cur int
