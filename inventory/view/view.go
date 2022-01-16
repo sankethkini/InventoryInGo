@@ -38,34 +38,35 @@ func display(cur []map[string]interface{}) {
 	}
 }
 
-//executeCommand function executes command selected by user
-func executeCommand(cmd commands.Command) {
-	res, err := cmd.Execute()
+//handleCommand function executes command selected by user
+func handleCommand(cmd commands.Command, err error) {
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
-	display(res)
+
+	data, err := cmd.Execute()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	display(data)
 }
 
 //RunCommand function runs the right command for perticular input
 func RunCommand(curInput int, name string, quantity int, price float64, typ string) {
-
-	var curCommand commands.Command
-	var err error
 	if curInput == 1 {
-		curCommand, err = commands.NewAddCommand(name, quantity, price, typ)
+		add, err := commands.NewAddCommand(name, quantity, price, typ)
+		handleCommand(add, err)
+
 	} else if curInput == 2 {
-		curCommand, err = commands.NewDisplayCommand()
-	} else {
-		curCommand, err = commands.NewExitCommand()
-	}
-	if err != nil {
-		fmt.Println(err)
+		disp, err := commands.NewDisplayCommand()
+		handleCommand(disp, err)
 
 	} else {
-		executeCommand(curCommand)
+		exit, err := commands.NewExitCommand()
+		handleCommand(exit, err)
 	}
-
 }
 
 //MenuForUser displays the menu for user

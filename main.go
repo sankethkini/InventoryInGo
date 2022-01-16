@@ -11,7 +11,9 @@ func main() {
 	quantityPtr := flag.Int("quantity", 0, "quantity")
 	typePtr := flag.String("type", "raw", "type of the item (raw,manufactured,imported)")
 	flag.Parse()
-	view.RunCommand(1, *namePtr, *quantityPtr, *pricePtr, *typePtr)
+	if *namePtr != "unknown" {
+		view.RunCommand(1, *namePtr, *quantityPtr, *pricePtr, *typePtr)
+	}
 	for {
 		view.MenuForUser()
 	}

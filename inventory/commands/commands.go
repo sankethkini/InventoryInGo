@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var items []item.Item
+var items []*item.MainItem
 
 //createmsg creates required return message
 func createmsg(msg string) (returnmsg []data) {
@@ -27,7 +27,7 @@ type Command interface {
 
 //add command implementation
 type add struct {
-	cur item.Item
+	cur *item.MainItem
 }
 
 func (add *add) Execute() ([]data, error) {
@@ -73,20 +73,23 @@ func (exit *exit) Execute() ([]data, error) {
 //NewAddCommand is add command's constructor
 func NewAddCommand(name string, quantity int, price float64, typ string) (Command, error) {
 	add := add{}
-
 	switch typ {
 
 	case "raw":
-		add.cur = item.NewRawItem(name, price, quantity)
+		raw := item.NewRawItem(name, price, quantity)
+		add.cur = item.NewMainItem(&raw)
 
 	case "imported":
-		add.cur = item.NewImportedItem(name, price, quantity)
+		imported := item.NewImportedItem(name, price, quantity)
+		add.cur = item.NewMainItem(&imported)
 
 	case "manufactured":
-		add.cur = item.NewManufacturedItem(name, price, quantity)
+		manf := item.NewManufacturedItem(name, price, quantity)
+		add.cur = item.NewMainItem(&manf)
+
 	default:
 
-		return nil, NotARightTypeErr
+		return nil, fmt.Errorf("error in createing new item %w", NotARightTypeErr)
 	}
 
 	return &add, nil
