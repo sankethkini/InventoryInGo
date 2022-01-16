@@ -17,21 +17,21 @@ var tests = []struct {
 }
 
 func TestItemCalc(t *testing.T) {
-	for i, val := range tests {
+	for _, val := range tests {
 
 		raw := NewRawItem(val.Name, val.Price, val.Quantity)
 		if raw.Calc() != val.ExpcRaw {
-			t.Error("error in calculating raw product price", i)
+			t.Errorf("error in calculating raw product price exp: %v got: %v", val.ExpcRaw, raw.Calc())
 		}
 
 		imported := NewImportedItem(val.Name, val.Price, val.Quantity)
 		if imported.Calc() != val.ExpcImp {
-			t.Error("error in calculating imported product price", i, imported.Calc())
+			t.Errorf("error in calculating imported product price exp: %v got: %v", val.ExpcImp, imported.Calc())
 		}
 
 		manf := NewManufacturedItem(val.Name, val.Price, val.Quantity)
 		if manf.Calc() != val.ExpcManf {
-			t.Error("error in calculating manufactured product price", i)
+			t.Errorf("error in calculating manufactured product price exp: %v got: %v", val.ExpcManf, manf.Calc())
 		}
 	}
 }
