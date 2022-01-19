@@ -9,7 +9,7 @@ import (
 var items []*item.MainItem
 
 //createmsg creates required return message
-func createmsg(msg string) (returnmsg []data) {
+func createMsg(msg string) (returnmsg []data) {
 
 	mp := make(data)
 	mp["message"] = msg
@@ -32,7 +32,7 @@ type add struct {
 
 func (add *add) Execute() ([]data, error) {
 	items = append(items, add.cur)
-	msg := createmsg("item added successfuly")
+	msg := createMsg("item added successfuly")
 	return msg, nil
 }
 
@@ -41,7 +41,7 @@ type display struct {
 }
 
 func (display *display) Execute() ([]data, error) {
-	var allitems []data
+	var allItems []data
 
 	for _, val := range items {
 
@@ -54,10 +54,10 @@ func (display *display) Execute() ([]data, error) {
 		cur["total"] = val.Calc()
 		cur["tax"] = tax
 
-		allitems = append(allitems, cur)
+		allItems = append(allItems, cur)
 	}
 
-	return allitems, nil
+	return allItems, nil
 }
 
 //exit command implementation
