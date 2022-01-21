@@ -28,7 +28,7 @@ var test = []struct {
 	},
 	{
 		typ:      "other",
-		expected: fmt.Errorf("error in createing new item %w", NotARightTypeErr),
+		expected: fmt.Errorf("error in createing new item %v", NotARightTypeErr),
 		wantErr:  false,
 	},
 }
@@ -74,25 +74,25 @@ func TestAddAndDisply(t *testing.T) {
 		add, err := NewAddCommand(val.Name, val.Quantity, val.Price, val.typ)
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %w", err)
+			t.Errorf("unexpected error occured %v", err)
 		}
 
 		_, err = add.Execute()
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %w", err)
+			t.Errorf("unexpected error occured %v", err)
 		}
 
 		disp, err := NewDisplayCommand()
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %w", err)
+			t.Errorf("unexpected error occured %v", err)
 		}
 
 		got, err := disp.Execute()
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %w", err)
+			t.Errorf("unexpected error occured %v", err)
 		}
 
 		if !reflect.DeepEqual(got[0], val.res) {
@@ -105,6 +105,6 @@ func TestAddAndDisply(t *testing.T) {
 func TestExit(t *testing.T) {
 	_, err := NewExitCommand()
 	if err != nil {
-		t.Errorf("expected no error got:%w", err)
+		t.Errorf("expected no error got:% v", err)
 	}
 }
