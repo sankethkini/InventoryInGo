@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"inventory/inventory/item"
 	"os"
+
+	"github.com/pkg/errors"
 )
 
 var items []*item.MainItem
@@ -89,7 +91,7 @@ func NewAddCommand(name string, quantity int, price float64, typ string) (Comman
 
 	default:
 
-		return nil, fmt.Errorf("error in createing new item %w", NotARightTypeErr)
+		return nil, errors.Wrap(NotARightTypeErr, "cannot create item")
 	}
 
 	return &add, nil

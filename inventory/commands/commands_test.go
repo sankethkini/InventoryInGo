@@ -1,9 +1,10 @@
 package commands
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/pkg/errors"
 )
 
 var test = []struct {
@@ -28,7 +29,7 @@ var test = []struct {
 	},
 	{
 		typ:      "other",
-		expected: fmt.Errorf("error in createing new item %v", NotARightTypeErr),
+		expected: NotARightTypeErr,
 		wantErr:  false,
 	},
 }
@@ -37,7 +38,7 @@ func TestAdd(t *testing.T) {
 
 	for _, val := range test {
 		_, err := NewAddCommand("apples", 10, 100, val.typ)
-		if val.wantErr && err.Error() != val.expected.Error() {
+		if val.wantErr && errors.Cause(err).Error() != val.expected.Error() {
 			t.Errorf("add command is not correct expected: %v got :%v", val.expected, err)
 		}
 	}
