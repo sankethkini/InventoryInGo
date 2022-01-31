@@ -29,13 +29,12 @@ var test = []struct {
 	},
 	{
 		typ:      "other",
-		expected: NotARightTypeErr,
+		expected: ErrNotARightType,
 		wantErr:  false,
 	},
 }
 
 func TestAdd(t *testing.T) {
-
 	for _, val := range test {
 		_, err := NewAddCommand("apples", 10, 100, val.typ)
 		if val.wantErr && errors.Cause(err).Error() != val.expected.Error() {
@@ -45,7 +44,6 @@ func TestAdd(t *testing.T) {
 }
 
 func TestAddAndDisply(t *testing.T) {
-
 	result := make(map[string]interface{})
 	result["name"] = "apples"
 	result["price"] = float64(800)
@@ -53,7 +51,7 @@ func TestAddAndDisply(t *testing.T) {
 	result["total"] = float64(800*0.125 + 800)
 	result["tax"] = float64(12.5)
 
-	var alltests = []struct {
+	alltests := []struct {
 		Name     string
 		Price    float64
 		typ      string
@@ -75,31 +73,30 @@ func TestAddAndDisply(t *testing.T) {
 		add, err := NewAddCommand(val.Name, val.Quantity, val.Price, val.typ)
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %v", err)
+			t.Errorf("unexpected error occurred %v", err)
 		}
 
 		_, err = add.Execute()
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %v", err)
+			t.Errorf("unexpected error occurred %v", err)
 		}
 
 		disp, err := NewDisplayCommand()
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %v", err)
+			t.Errorf("unexpected error occurred %v", err)
 		}
 
 		got, err := disp.Execute()
 
 		if !val.wantErr && err != nil {
-			t.Errorf("unexpected error occured %v", err)
+			t.Errorf("unexpected error occurred %v", err)
 		}
 
 		if !reflect.DeepEqual(got[0], val.res) {
 			t.Error(got, result)
 		}
-
 	}
 }
 

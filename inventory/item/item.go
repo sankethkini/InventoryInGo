@@ -1,8 +1,8 @@
 package item
 
-import "inventory/inventory/constants"
+import "github.com/sankethkini/InventoryInGo/inventory/constants"
 
-//BaseItem contains all the data required for a item
+// BaseItem contains all the data required for a item.
 type BaseItem struct {
 	name     string
 	price    float64
@@ -10,7 +10,7 @@ type BaseItem struct {
 	tax      float64
 }
 
-//every type of item should implement this
+// every type of item should implement this.
 type Item interface {
 	GetDetails() (string, float64, int, float64)
 	Calc() float64
@@ -31,12 +31,12 @@ func (b *BaseItem) GetDetails() (name string, price float64, quantity int, tax f
 	return
 }
 
-//function to check negetive number
+// function to check negetive number.
 func checkneg(cur float64) bool {
 	return cur <= 0
 }
 
-//rawItem is struct for item of type raw
+// rawItem is struct for item of type raw.
 type rawItem struct {
 	BaseItem
 }
@@ -50,7 +50,7 @@ func (item rawItem) Calc() float64 {
 	return total
 }
 
-//importedItem is struct for imported items
+// importedItem is struct for imported items.
 type importedItem struct {
 	BaseItem
 }
@@ -61,17 +61,18 @@ func (item importedItem) Calc() float64 {
 	}
 	total := item.price
 	total += total * (constants.ImportTax / 100)
-	if total <= 100 {
+	switch {
+	case total <= 100:
 		total += constants.Surcharge100
-	} else if total <= 200 {
+	case total <= 200:
 		total += constants.Surcharge200
-	} else {
+	default:
 		total += total * (constants.SurchargeMore / 100)
 	}
 	return total
 }
 
-//ManufacturedItem is struct for manufactured items
+// ManufacturedItem is struct for manufactured items.
 type manufacturedItem struct {
 	BaseItem
 }
@@ -86,28 +87,28 @@ func (item manufacturedItem) Calc() float64 {
 	return total
 }
 
-//NewManufacturedItem is Manufactured item's constructor
+// NewManufacturedItem is Manufactured item's constructor.
 func NewManufacturedItem(name string, price float64, quantity int) Item {
 	cur := manufacturedItem{}
 	cur.SetDetails(name, price, quantity, constants.ManufacturedTax)
 	return &cur
 }
 
-//NewImportedItem is Imported item's constructor
+// NewImportedItem is Imported item's constructor.
 func NewImportedItem(name string, price float64, quantity int) Item {
 	cur := importedItem{}
 	cur.SetDetails(name, price, quantity, constants.ImportTax)
 	return &cur
 }
 
-//NewRawItem is Raw item's constructor
+// NewRawItem is Raw item's constructor.
 func NewRawItem(name string, price float64, quantity int) Item {
 	cur := rawItem{}
 	cur.SetDetails(name, price, quantity, constants.RawTax)
 	return &cur
 }
 
-//MainItem covers all the possible items
+// MainItem covers all the possible items.
 type MainItem struct {
 	I *Item
 }
@@ -122,7 +123,7 @@ func (m MainItem) GetDetails() (name string, price float64, quantity int, tax fl
 	return cur.GetDetails()
 }
 
-//NewMainItem is mainitem's constructors
+// NewMainItem is mainitem's constructors.
 func NewMainItem(i *Item) *MainItem {
 	return &MainItem{I: i}
 }

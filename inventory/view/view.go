@@ -2,10 +2,11 @@ package view
 
 import (
 	"fmt"
-	"inventory/inventory/commands"
+
+	"github.com/sankethkini/InventoryInGo/inventory/commands"
 )
 
-//getDeatils function helps to get details from user
+// getDeatils function helps to get details from user.
 func getDetails() {
 	var name, typ string
 	var quantity int
@@ -26,9 +27,8 @@ func getDetails() {
 	RunCommand(1, name, quantity, price, typ)
 }
 
-//display function displays the result of operation to user
+// display function displays the result of operation to user.
 func display(cur []map[string]interface{}) {
-
 	fmt.Printf("------------------------\n")
 	for _, val := range cur {
 		for key, val := range val {
@@ -38,7 +38,7 @@ func display(cur []map[string]interface{}) {
 	}
 }
 
-//handleCommand function executes command selected by user
+// handleCommand function executes command selected by user.
 func handleCommand(cmd commands.Command, err error) {
 	if err != nil {
 		fmt.Println(err)
@@ -53,23 +53,22 @@ func handleCommand(cmd commands.Command, err error) {
 	display(data)
 }
 
-//RunCommand function runs the right command for perticular input
+// RunCommand function runs the right command for perticular input.
 func RunCommand(curInput int, name string, quantity int, price float64, typ string) {
-	if curInput == 1 {
+	switch curInput {
+	case 1:
 		add, err := commands.NewAddCommand(name, quantity, price, typ)
 		handleCommand(add, err)
-
-	} else if curInput == 2 {
+	case 2:
 		disp, err := commands.NewDisplayCommand()
 		handleCommand(disp, err)
-
-	} else {
+	default:
 		exit, err := commands.NewExitCommand()
 		handleCommand(exit, err)
 	}
 }
 
-//MenuForUser displays the menu for user
+// MenuForUser displays the menu for user.
 func MenuForUser() {
 	fmt.Println("1. add more items 2. display all 3. exit")
 	var cur int

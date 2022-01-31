@@ -18,9 +18,7 @@ var tests = []struct {
 }
 
 func TestItemCalc(t *testing.T) {
-
 	for _, val := range tests {
-
 		raw := NewRawItem(val.Name, val.Price, val.Quantity)
 		if raw.Calc() != val.ExpcRaw {
 			t.Errorf("error in calculating raw product price exp: %v got: %v", val.ExpcRaw, raw.Calc())
@@ -39,7 +37,7 @@ func TestItemCalc(t *testing.T) {
 }
 
 func TestCreateAndDisplay(t *testing.T) {
-	var test = []struct {
+	test := []struct {
 		Name     string
 		Price    float64
 		Quantity int

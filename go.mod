@@ -1,4 +1,4 @@
-module inventory
+module github.com/sankethkini/InventoryInGo
 
 go 1.17
 

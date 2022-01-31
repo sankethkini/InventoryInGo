@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"inventory/inventory/view"
+
+	"github.com/sankethkini/InventoryInGo/inventory/view"
 )
 
 func main() {
@@ -17,5 +18,4 @@ func main() {
 	for {
 		view.MenuForUser()
 	}
-
 }
