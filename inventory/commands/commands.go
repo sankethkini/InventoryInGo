@@ -11,7 +11,7 @@ import (
 
 var items []*item.MainItem
 
-// createmsg creates required return message.
+// createMsg creates required return message.
 func createMsg(msg string) (returnmsg []data) {
 	mp := make(data)
 	mp["message"] = msg
@@ -30,43 +30,6 @@ type Command interface {
 // add command implementation.
 type add struct {
 	cur *item.MainItem
-}
-
-func (add *add) Execute() ([]data, error) {
-	items = append(items, add.cur)
-	msg := createMsg("item added successfully")
-	return msg, nil
-}
-
-// display command implementation.
-type display struct{}
-
-func (display *display) Execute() ([]data, error) {
-	allItems := make([]data, 0, len(items))
-
-	for _, val := range items {
-		cur := make(data)
-		name, price, quantity, tax := val.GetDetails()
-
-		cur["name"] = name
-		cur["price"] = price
-		cur["quantity"] = quantity
-		cur["total"] = val.Calc()
-		cur["tax"] = tax
-
-		allItems = append(allItems, cur)
-	}
-
-	return allItems, nil
-}
-
-// exit command implementation.
-type exit struct{}
-
-func (exit *exit) Execute() ([]data, error) {
-	fmt.Println("exiting....")
-	os.Exit(0)
-	return nil, nil
 }
 
 // NewAddCommand is add command's constructor.
@@ -93,14 +56,51 @@ func NewAddCommand(name string, quantity int, price float64, typ string) (Comman
 	return add, nil
 }
 
+func (add *add) Execute() ([]data, error) {
+	items = append(items, add.cur)
+	msg := createMsg("item added successfully")
+	return msg, nil
+}
+
+// display command implementation.
+type display struct{}
+
 // NewDisplayCommand is display command's constructor.
 func NewDisplayCommand() (Command, error) {
 	display := new(display)
 	return display, nil
 }
 
+func (display *display) Execute() ([]data, error) {
+	allItems := make([]data, 0, len(items))
+
+	for _, val := range items {
+		cur := make(data)
+		name, price, quantity, tax := val.GetDetails()
+
+		cur["name"] = name
+		cur["price"] = price
+		cur["quantity"] = quantity
+		cur["total"] = val.Calc()
+		cur["tax"] = tax
+
+		allItems = append(allItems, cur)
+	}
+
+	return allItems, nil
+}
+
+// exit command implementation.
+type exit struct{}
+
 // NewExitCommand is exit command's constructor.
 func NewExitCommand() (Command, error) {
 	exit := new(exit)
 	return exit, nil
+}
+
+func (exit *exit) Execute() ([]data, error) {
+	fmt.Println("exiting....")
+	os.Exit(0)
+	return nil, nil
 }
